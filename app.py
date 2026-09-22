@@ -2,28 +2,52 @@ import streamlit as st
 
 st.set_page_config(page_title="Gandulator", page_icon="🧮", layout="centered")
 
-# --- Custom CSS for Mobile Styling ---
+# --- Mobile-Optimized CSS ---
 st.markdown("""
 <style>
-    /* Clean up extra space on top */
+    /* Remove default app padding */
     .block-container {
-        padding-top: 1.5rem;
-        padding-bottom: 2rem;
-        max-width: 420px;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        padding-left: 0.8rem !important;
+        padding-right: 0.8rem !important;
+        max-width: 360px !important;
+        margin: 0 auto !important;
     }
-    /* Style calculator buttons */
+    
+    /* Compact title */
+    h1 {
+        font-size: 1.8rem !important;
+        margin-bottom: 0.5rem !important;
+        padding: 0 !important;
+    }
+
+    /* Force columns to shrink and not overflow */
+    div[data-testid="stHorizontalBlock"] {
+        gap: 6px !important;
+    }
+    div[data-testid="column"] {
+        min-width: 0 !important;
+        flex: 1 1 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Responsive, touch-friendly button sizing */
     div.stButton > button {
-        height: 3.2rem;
-        font-size: 1.25rem;
-        font-weight: 600;
-        border-radius: 10px;
+        height: 3.2rem !important;
+        width: 100% !important;
+        font-size: 1.2rem !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        padding: 0 !important;
     }
-    /* Style display box */
+
+    /* High-visibility display screen */
     div[data-baseweb="input"] input {
         font-size: 1.8rem !important;
-        text-align: right;
-        font-weight: bold;
-        letter-spacing: 1px;
+        text-align: right !important;
+        font-weight: bold !important;
+        height: 3.2rem !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -51,7 +75,7 @@ def calculate():
 # Display screen
 st.text_input("Screen", value=st.session_state.expression, label_visibility="collapsed", disabled=True)
 
-# Keypad grid layout
+# 4x4 Keypad Grid
 grid = [
     ["7", "8", "9", "/"],
     ["4", "5", "6", "*"],
@@ -59,14 +83,13 @@ grid = [
     ["0", ".", "=", "+"],
 ]
 
-# wrap=False prevents vertical stacking on mobile screens
 for row in grid:
-    cols = st.columns(4, gap="small", wrap=False)
+    cols = st.columns(4, gap="small", vertical_alignment="center")
     for i, val in enumerate(row):
         if val == "=":
             cols[i].button(val, on_click=calculate, use_container_width=True, type="primary")
         else:
             cols[i].button(val, on_click=click, args=(val,), use_container_width=True)
 
-# Wide Clear button
+# Clear button
 st.button("Clear (C)", on_click=clear, use_container_width=True)
