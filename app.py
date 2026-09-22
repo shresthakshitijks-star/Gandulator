@@ -2,29 +2,46 @@ import streamlit as st
 
 st.set_page_config(page_title="Gandulator", page_icon="🧮", layout="centered")
 
-# --- Custom Styling for PC & Mobile ---
+# --- Zero-Scroll Mobile CSS ---
 st.markdown("""
 <style>
-    /* Remove padding around main container */
+    /* Hide top header bar completely */
+    header[data-testid="stHeader"] {
+        display: none !important;
+    }
+    
+    /* Remove default padding from the whole app */
+    .stApp {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
     .block-container {
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
         padding-left: 0.5rem !important;
         padding-right: 0.5rem !important;
-        max-width: 380px !important;
+        max-width: 360px !important;
         margin: 0 auto !important;
     }
+    
+    /* Compact title */
+    .calc-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 0.3rem;
+    }
 
-    /* Keep all 4 columns in a single row without horizontal overflow */
+    /* Keep all 4 columns side-by-side */
     div[data-testid="stHorizontalBlock"] {
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
         gap: 6px !important;
-        width: 100% !important;
+        margin-bottom: -10px !important; /* Tightens row-to-row spacing */
     }
 
-    /* Force columns to scale evenly to exactly 25% */
+    /* Force columns to scale evenly to 25% */
     div[data-testid="column"] {
         min-width: 0 !important;
         flex: 1 1 0px !important;
@@ -32,27 +49,27 @@ st.markdown("""
         padding: 0 !important;
     }
 
-    /* Touchscreen button dimensions */
+    /* Compact button height for mobile screens */
     div.stButton > button {
-        height: 3.2rem !important;
+        height: 2.6rem !important;
         width: 100% !important;
-        font-size: 1.25rem !important;
+        font-size: 1.15rem !important;
         font-weight: 600 !important;
         border-radius: 8px !important;
         padding: 0 !important;
     }
 
-    /* Screen display styling */
+    /* Compact display screen */
     div[data-baseweb="input"] input {
-        font-size: 1.8rem !important;
+        font-size: 1.6rem !important;
         text-align: right !important;
         font-weight: bold !important;
-        height: 3.2rem !important;
+        height: 2.8rem !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🧮 Gandulator")
+st.markdown('<div class="calc-title">🧮 Gandulator</div>', unsafe_allow_html=True)
 
 # State management
 if "expression" not in st.session_state:
@@ -72,10 +89,10 @@ def calculate():
     except Exception:
         st.session_state.expression = "Error"
 
-# Display screen
+# Screen display
 st.text_input("Screen", value=st.session_state.expression, label_visibility="collapsed", disabled=True)
 
-# Keypad layout
+# Grid layout
 grid = [
     ["7", "8", "9", "/"],
     ["4", "5", "6", "*"],
@@ -91,5 +108,5 @@ for row in grid:
         else:
             cols[i].button(val, on_click=click, args=(val,), use_container_width=True)
 
-# Wide Clear button
+# Clear button
 st.button("Clear (C)", on_click=clear, use_container_width=True)
